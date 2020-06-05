@@ -2,6 +2,7 @@ package com.qst.note;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.qst.note.activity.NoteActivity;
 import com.qst.note.bean.NoteBean;
 import com.qst.note.constant.Constants;
 import com.qst.note.result.Result;
@@ -43,9 +45,29 @@ public class MainActivity extends AppCompatActivity {
         lv = findViewById(R.id.lv);
         btn = findViewById(R.id.btn_add);
 
+        /*任务14，新增代码，点击新增按钮，跳转到NoteActivity*/
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                intent.putExtra("type",1);    //1代表是新增备忘
+                intent.putExtra("tel",tel);   //新增备忘时需要用户tel
+                startActivity(intent);
+            }
+        });
+        /*任务14，短按列表项进入NoteActivity查看该条备忘详情*/
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                intent.putExtra("type",2);    //2代表是查看备忘详情
+                intent.putExtra("id",datas.get(position).getId());   //查看备忘时需要备忘id
+                startActivity(intent);
+            }
+        });
+
         requestQueue = Volley.newRequestQueue(this);  //初始化请求队列
         tel = getIntent().getStringExtra("tel");   //获取上一个页面传递过来的tel
-
 
         /*长按列表项删除该条记录，向服务器发起删除的请求*/
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
